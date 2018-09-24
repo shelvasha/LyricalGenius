@@ -13,4 +13,4 @@ These can be install using pip install <package> . For more information, refer t
   ## Usage
   To use the applet, select a track in iTunes, and go to the itunes scripts menu and select LyricalGenius.
   
-  ![]()
+  ![](https://github.com/shelvasha/LyricalGenius/blob/master/example.png)

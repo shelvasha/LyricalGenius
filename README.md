@@ -8,7 +8,7 @@ The following are required for the applet to work:
 - bs4
 - BeautifulSoup
 
-These can be install using pip install <package> . For more information, refer to [pip documentation](https://pip.pypa.io/en/stable/installing/).
+These can be install using pip install <package> . For more information, refer to [pip](https://pip.pypa.io/en/stable/installing/) package manager.
   
   ## Usage
   To use the applet, select a track in iTunes, and go to the scripts/applet menu and select LyricalGenius.

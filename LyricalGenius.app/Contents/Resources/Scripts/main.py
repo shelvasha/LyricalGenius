@@ -22,11 +22,19 @@ lCount = int(rawCount)+1
 
 for i in range(1,lCount):
 	cmd2 = """osascript -e 'tell application "iTunes"
-	set songName to get name of item """+str(i)+"""of selection
+	set songName to get name of item """+str(i)+""" of selection
 	end tell'"""
 
   	cmd3 = """osascript -e 'tell application "iTunes"
-  	set artistName to get album artist of item """+ str(i) +"""of selection
+  	set albumArtist to get album artist of item """+ str(i) +""" of selection
+  	end tell'"""
+
+  	cmd6 = """osascript -e 'tell application "iTunes"
+  	set artistName2 to get artist of item """+ str(i) +""" of selection
+  	end tell'"""
+
+  	cmd7 = """osascript -e 'tell application "iTunes"
+  	set albumTitle to get album of item """+ str(i) +""" of selection
   	end tell'"""
 
 	def arg2():
@@ -39,11 +47,26 @@ for i in range(1,lCount):
 		p = subprocess.Popen([cmd3], stdout=subprocess.PIPE, shell=True)
 		return p.stdout.read()
 
- 	song_title=arg2().decode('utf-8').strip()
-	artist_name=arg3().decode('utf-8').strip()
-	
+	def arg6():
+		# os.system(cmd2)
+		p = subprocess.Popen([cmd6], stdout=subprocess.PIPE, shell=True)
+		return p.stdout.read()
+
+	def arg7():
+		# os.system(cmd2)
+		p = subprocess.Popen([cmd7], stdout=subprocess.PIPE, shell=True)
+		return p.stdout.read()
+
+ 	song_title=arg2().decode('utf-8').strip().lower()
+	artist_name=arg3().decode('utf-8').strip().lower()
+	artist_name2=arg6().decode('utf-8').strip().lower()
+	album_title=arg7().decode('utf-8').strip().lower()
+
 	# print song_title
 	# print artist_name
+	# print album_title
+	# print artist_name2
+
 
 	base_url = "http://api.genius.com"
 	headers = {'Authorization': 'Bearer j3gmGgelWkUoY4I1DkAx7RATodylb5FW_MHLVVD2QiEO1_O9OVCUAIxa6eFvZSoF'}
@@ -63,23 +86,27 @@ for i in range(1,lCount):
 		[h.extract() for h in html('script')]
 
 		#at least Genius is nice and has a tag called 'lyrics'!
-		lyrics = html.find("div", class_="lyrics").get_text() #updated css where the lyrics are based in HTML
+		lyrics = html.find("div", class_="lyrics").get_text()
 		return lyrics
 
 	if __name__ == "__main__":
 		search_url = base_url + "/search"
-		data = {'q': song_title}
+		data = {'q': song_title + " " + artist_name2}
 		response = requests.get(search_url, params=data, headers=headers)
 		json = response.json()
 		song_info = None
 
 	for hit in json["response"]["hits"]:
-		if hit["result"]["primary_artist"]["name"] == artist_name:
+		# print hit["result"]["url"]
+		# print hit["result"]["title"].lower()
+		# print hit["result"]["primary_artist"]["name"].lower()
+
+		if artist_name in hit["result"]["primary_artist"]["name"].lower() and song_title in hit["result"]["title"].lower() or artist_name2 in hit["result"]["primary_artist"]["name"].lower() and song_title in hit["result"]["title"].lower():
 		  song_info = hit
-		elif hit["result"]["primary_artist"]["name"] != artist_name:
+		else:
 			song_lyrics = ""
 
-	if song_info:
+	if song_info:		
 		song_api_path = song_info["result"]["api_path"]
 		song_lyrics = lyrics_from_song_api_path(song_api_path).encode('utf8')
 

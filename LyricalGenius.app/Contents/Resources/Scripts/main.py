@@ -26,16 +26,17 @@ for i in range(1,lCount):
 	end tell'"""
 
   	cmd3 = """osascript -e 'tell application "iTunes"
-  	set albumArtist to get album artist of item """+ str(i) +""" of selection
+  	set albumArtist to get artist of item """+ str(i) +""" of selection
+  	end tell'"""
+
+  	cmd5 = """osascript -e 'tell application "iTunes"
+  	set artistName2 to get sort album artist of item """+ str(i) +""" of selection
   	end tell'"""
 
   	cmd6 = """osascript -e 'tell application "iTunes"
-  	set artistName2 to get artist of item """+ str(i) +""" of selection
-  	end tell'"""
-
-  	cmd7 = """osascript -e 'tell application "iTunes"
   	set albumTitle to get album of item """+ str(i) +""" of selection
   	end tell'"""
+
 
 	def arg2():
 	  	# os.system(cmd1)
@@ -47,26 +48,25 @@ for i in range(1,lCount):
 		p = subprocess.Popen([cmd3], stdout=subprocess.PIPE, shell=True)
 		return p.stdout.read()
 
+	def arg5():
+		# os.system(cmd2)
+		p = subprocess.Popen([cmd5], stdout=subprocess.PIPE, shell=True)
+		return p.stdout.read()
+
 	def arg6():
 		# os.system(cmd2)
 		p = subprocess.Popen([cmd6], stdout=subprocess.PIPE, shell=True)
 		return p.stdout.read()
 
-	def arg7():
-		# os.system(cmd2)
-		p = subprocess.Popen([cmd7], stdout=subprocess.PIPE, shell=True)
-		return p.stdout.read()
-
  	song_title=arg2().decode('utf-8').strip().lower()
-	artist_name=arg3().decode('utf-8').strip().lower()
-	artist_name2=arg6().decode('utf-8').strip().lower()
-	album_title=arg7().decode('utf-8').strip().lower()
+	artist_name=arg3().decode('utf-8').strip().lower()#.replace(".","")
+	artist_name2=arg5().decode('utf-8').strip().lower()
+	album_title=arg6().decode('utf-8').strip().lower()
 
 	# print song_title
 	# print artist_name
 	# print album_title
 	# print artist_name2
-
 
 	base_url = "http://api.genius.com"
 	headers = {'Authorization': 'Bearer j3gmGgelWkUoY4I1DkAx7RATodylb5FW_MHLVVD2QiEO1_O9OVCUAIxa6eFvZSoF'}
@@ -77,32 +77,32 @@ for i in range(1,lCount):
 		json = response.json()
 		path = json["response"]["song"]["path"]
 
-		#gotta go regular html scraping... come on Genius
+		# BeautifulSoup html scraping
 		page_url = "http://genius.com" + path
 		page = requests.get(page_url)
 		html = BeautifulSoup(page.text, "html.parser")
 
-		#remove script tags that they put in the middle of the lyrics
+		# Removes script tags within lyrics html and searches for div class "lyrics"
 		[h.extract() for h in html('script')]
-
-		#at least Genius is nice and has a tag called 'lyrics'!
 		lyrics = html.find("div", class_="lyrics").get_text()
 		return lyrics
 
 	if __name__ == "__main__":
 		search_url = base_url + "/search"
-		data = {'q': song_title + " " + artist_name2}
+		data = {'q': song_title + " " + artist_name}
 		response = requests.get(search_url, params=data, headers=headers)
 		json = response.json()
 		song_info = None
 
 	for hit in json["response"]["hits"]:
-		# print hit["result"]["url"]
-		# print hit["result"]["title"].lower()
-		# print hit["result"]["primary_artist"]["name"].lower()
+		# print hit["result"]
+		result_url = hit["result"]["url"]
+		result_title = hit["result"]["title"].lower()
+		result_artistname = hit["result"]["primary_artist"]["name"].lower()
 
-		if artist_name in hit["result"]["primary_artist"]["name"].lower() and song_title in hit["result"]["title"].lower() or artist_name2 in hit["result"]["primary_artist"]["name"].lower() and song_title in hit["result"]["title"].lower():
-		  song_info = hit
+		# print result_artistname
+		if artist_name in result_artistname and song_title in result_title or artist_name2 in result_artistname and song_title in result_title:
+	  		song_info = hit
 		else:
 			song_lyrics = ""
 

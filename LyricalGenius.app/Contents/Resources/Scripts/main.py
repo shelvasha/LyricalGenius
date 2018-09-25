@@ -22,15 +22,11 @@ lCount = int(rawCount)+1
 
 for i in range(1,lCount):
 	cmd2 = """osascript -e 'tell application "iTunes"
-	set songName to get name of item """+str(i)+""" of selection
+	set songName to get name of item """+str(i)+"""of selection
 	end tell'"""
 
   	cmd3 = """osascript -e 'tell application "iTunes"
-  	set albumArtist to get album artist of item """+ str(i) +""" of selection
-  	end tell'"""
-
-  	cmd6 = """osascript -e 'tell application "iTunes"
-  	set artistName2 to get artist of item """+ str(i) +""" of selection
+  	set artistName to get album artist of item """+ str(i) +"""of selection
   	end tell'"""
 
 	def arg2():
@@ -43,19 +39,11 @@ for i in range(1,lCount):
 		p = subprocess.Popen([cmd3], stdout=subprocess.PIPE, shell=True)
 		return p.stdout.read()
 
-	def arg6():
-		# os.system(cmd2)
-		p = subprocess.Popen([cmd6], stdout=subprocess.PIPE, shell=True)
-		return p.stdout.read()
-
- 	song_title=arg2().decode('utf-8').strip().lower()
-	artist_name=arg3().decode('utf-8').strip().lower()
-	artist_name2=arg6().decode('utf-8').strip().lower()
-
+ 	song_title=arg2().decode('utf-8').strip()
+	artist_name=arg3().decode('utf-8').strip()
+	
 	# print song_title
 	# print artist_name
-	# print artist_name2
-
 
 	base_url = "http://api.genius.com"
 	headers = {'Authorization': 'Bearer j3gmGgelWkUoY4I1DkAx7RATodylb5FW_MHLVVD2QiEO1_O9OVCUAIxa6eFvZSoF'}
@@ -83,20 +71,15 @@ for i in range(1,lCount):
 		data = {'q': song_title}
 		response = requests.get(search_url, params=data, headers=headers)
 		json = response.json()
-		# print json["response"]["hits"]
 		song_info = None
 
 	for hit in json["response"]["hits"]:
-		# print hit["result"]["url"]
-		# print hit["result"]["title"].lower()		
-		if hit["result"]["primary_artist"]["name"].lower() == artist_name and hit["result"]["title"].lower() == song_title:
+		if hit["result"]["primary_artist"]["name"] == artist_name:
 		  song_info = hit
-		elif hit["result"]["primary_artist"]["name"].lower() == artist_name2 and hit["result"]["primary_artist"]["name"].lower() == song_title:
-		  song_info = hit
-		else:
+		elif hit["result"]["primary_artist"]["name"] != artist_name:
 			song_lyrics = ""
 
-	if song_info:		
+	if song_info:
 		song_api_path = song_info["result"]["api_path"]
 		song_lyrics = lyrics_from_song_api_path(song_api_path).encode('utf8')
 

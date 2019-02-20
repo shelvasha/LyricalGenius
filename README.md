@@ -15,4 +15,4 @@ These can be installed using pip install <package> . For more information, refer
 
   To use the applet, select a track in iTunes, and go to the itunes scripts menu and select LyricalGenius.
   
-  ![Example]("https://github.com/shelvasha/LyricalGenius/blob/master/example.png")
+<img src="/LyricalGenius/example.png" width=100% />

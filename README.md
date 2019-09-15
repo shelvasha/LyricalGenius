@@ -15,7 +15,7 @@ These can be installed using pip install <package> . For more information, refer
 
   To use the applet, select a track in iTunes, and go to the itunes scripts menu and select LyricalGenius.
   
-<!-- <img src="/LyricalGenius/example.png" width=100% /> -->
+<img src="/LyricalGenius/example.png" width=100% />
 
 ## Current Limitations
 1. The script is dependent on the case of the entry within the Genius database. Therefore, a mismatch of album artist name and/or song name in iTunes from an entry in Genius will return no lyrics.

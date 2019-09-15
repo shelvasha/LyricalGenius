@@ -1,4 +1,4 @@
-# lyricalGenius
+# lyricalgenius
 
 ## Pre-requisites
 The following are required for the applet to work:

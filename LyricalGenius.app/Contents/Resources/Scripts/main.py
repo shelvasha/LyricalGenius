@@ -69,7 +69,7 @@ for i in range(1,lCount):
 	# print artist_name2
 
 	base_url = "http://api.genius.com"
-	headers = {'Authorization': 'Bearer j3gmGgelWkUoY4I1DkAx7RATodylb5FW_MHLVVD2QiEO1_O9OVCUAIxa6eFvZSoF'}
+	headers = {'Authorization': 'Bearer [YOUR TOKEN]'}
 
 	def lyrics_from_song_api_path(song_api_path):
 		song_url = base_url + song_api_path
